@@ -12,6 +12,7 @@ import ru.makan1.eventmanagement.location.entity.LocationEntity;
 import ru.makan1.eventmanagement.location.mapper.LocationMapper;
 import ru.makan1.eventmanagement.location.repository.LocationsRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,11 +25,11 @@ public class LocationsService {
         this.locationsRepository = locationsRepository;
     }
 
-    public @Nullable List<LocationResponse> getLocationsList() {
+    public List<LocationResponse> getLocationsList() {
         List<LocationEntity> locationEntities = locationsRepository.findAll();
 
         if(locationEntities.isEmpty()) {
-            throw new EntityNotFoundException("Локаций пока нет");
+            return new ArrayList<>();
         }
 
         return locationEntities.stream()
@@ -36,7 +37,7 @@ public class LocationsService {
                 .toList();
     }
 
-    public @Nullable LocationResponse getLocationById(Long id) {
+    public LocationResponse getLocationById(Long id) {
         LocationEntity locationEntity = locationsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Локации с таким id не существует"));
 
