@@ -7,5 +7,9 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  security:
+    filter:
+      jwt-secret-key: ${SECRET_KEY:8f3c8e3d8f3c8e3d8f3c8e3d8f3c8e3d}
+      jwt-expiration-time: ${EXPIRATION_TIME:7200000}
 springdoc:
   swagger-ui.url: /event-manager-openapi.yaml

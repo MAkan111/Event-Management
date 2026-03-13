@@ -1,4 +1,4 @@
-package ru.makan1.eventmanagement.location.exception;
+package ru.makan1.eventmanagement.users.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.makan1.eventmanagement.location.dto.ErrorMessageResponse;
+import ru.makan1.eventmanagement.users.dto.ErrorMessageResponse;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "ru.makan1.eventmanagement.location.controller")
-public class LocationExceptionHandler {
+@RestControllerAdvice(basePackages = "ru.makan1.eventmanagement.users.controller")
+public class UsersExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> handleException(Exception e) {
@@ -34,7 +34,7 @@ public class LocationExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         log.error("Entity not found exception: {}", e.getMessage(), e);
         var errorMessageResponse = new ErrorMessageResponse(
-                "Ошибка поиска локации",
+                "Ошибка поиска пользователя",
                 e.getMessage(),
                 LocalDateTime.now()
         );
