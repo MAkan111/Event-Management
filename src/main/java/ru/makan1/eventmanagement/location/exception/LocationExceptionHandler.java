@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "ru.makan1.eventmanagement.location.controller")
 public class LocationExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> handleException(Exception e) {
-        log.error("Exception occured: {} {}", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        log.error("Exception occured: {}", e.getMessage(), e);
         var errorMessageResponse = new ErrorMessageResponse(
                 "Внутренняя ошибка сервера",
                 e.getMessage(),

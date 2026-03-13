@@ -1,5 +1,6 @@
 package ru.makan1.eventmanagement.users.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,8 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsersResponse> getUserById(@PathVariable("id") Long id) {
-        UsersResponse usersResponse = usersService.getById(id);
+        UsersResponse usersResponse = usersService.getById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Сущность с таким id не найдена"));
         return usersResponse == null
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
                 : ResponseEntity.ok(usersResponse);

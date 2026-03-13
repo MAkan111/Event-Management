@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,12 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "ru.makan1.eventmanagement.users.controller")
 public class UsersExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> handleException(Exception e) {
-        log.error("Exception occured: {} {}", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        log.error("Exception occured: {}", e.getMessage(), e);
         var errorMessageResponse = new ErrorMessageResponse(
                 "Внутренняя ошибка сервера",
                 e.getMessage(),
@@ -35,7 +34,7 @@ public class UsersExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         log.error("Entity not found exception: {} {}", e.getMessage(), Arrays.toString(e.getStackTrace()));
         var errorMessageResponse = new ErrorMessageResponse(
-                "Ошибка поиска локации",
+                "Ошибка поиска пользователя",
                 e.getMessage(),
                 LocalDateTime.now()
         );

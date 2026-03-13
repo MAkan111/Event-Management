@@ -84,10 +84,10 @@ public class GlobalSecurityConfig {
                 admin.setRole(UserRole.ADMIN);
 
                 UsersEntity user = new UsersEntity();
-                admin.setLogin("user");
-                admin.setPasswordHash(encoder.encode("test123"));
-                admin.setAge(22);
-                admin.setRole(UserRole.USER);
+                user.setLogin("user");
+                user.setPasswordHash(encoder.encode("test123"));
+                user.setAge(22);
+                user.setRole(UserRole.USER);
 
                 repo.saveAll(List.of(admin, user));
             }

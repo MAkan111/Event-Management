@@ -1,13 +1,15 @@
 package ru.makan1.eventmanagement.users.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.makan1.eventmanagement.users.dto.UsersRegistration;
 import ru.makan1.eventmanagement.users.dto.UsersResponse;
 import ru.makan1.eventmanagement.users.entity.UsersEntity;
+import ru.makan1.eventmanagement.users.exception.UserAlreadyExists;
 import ru.makan1.eventmanagement.users.mapper.UsersMapper;
 import ru.makan1.eventmanagement.users.repository.UsersRepository;
+
+import java.util.Optional;
 
 @Service
 public class UsersService {
@@ -31,9 +33,8 @@ public class UsersService {
         return UsersMapper.mapToUserResponse(usersRepository.save(usersEntity));
     }
 
-    public UsersResponse getById(Long id) {
-        return usersRepository.findById(id)
-                .map(UsersMapper::mapToUserResponse)
-                .orElse(null);
+    public Optional<UsersResponse> getById(Long id) {
+        Optional<UsersEntity> usersEntity = usersRepository.findById(id);
+        return usersEntity.map(UsersMapper::mapToUserResponse);
     }
 }
