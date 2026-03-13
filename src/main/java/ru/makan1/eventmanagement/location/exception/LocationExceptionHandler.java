@@ -32,7 +32,7 @@ public class LocationExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorMessageResponse> handleEntityNotFoundException(EntityNotFoundException e) {
-        log.error("Entity not found exception: {} {}", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        log.error("Entity not found exception: {}", e.getMessage(), e);
         var errorMessageResponse = new ErrorMessageResponse(
                 "Ошибка поиска локации",
                 e.getMessage(),
@@ -45,7 +45,7 @@ public class LocationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error("Validation exception: {} {}", e.getMessage(), Arrays.toString(e.getStackTrace()));
+        log.error("Validation exception: {}", e.getMessage(), e);
         Map<String, String> errorMessageResponse = new HashMap<>();
         e.getBindingResult().getFieldErrors().forEach((fieldError) -> {
             errorMessageResponse.put(fieldError.getField(), fieldError.getDefaultMessage());
