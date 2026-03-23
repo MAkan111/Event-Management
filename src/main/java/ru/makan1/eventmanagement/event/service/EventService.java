@@ -56,7 +56,7 @@ public class EventService {
                 .stream()
                 .filter(event -> {
                     if (eventSearchRequest.name() != null && !eventSearchRequest.name().isBlank()) {
-                        if (event.getName() == null || !event.getName().contains(eventSearchRequest.name())) {
+                        if (event.getName() == null || !event.getName().equals(eventSearchRequest.name())) {
                             return false;
                         }
                     }
@@ -228,6 +228,13 @@ public class EventService {
                 throw new IllegalArgumentException(
                         "Новое количество мест не может быть меньше числа уже записанных участников: "
                                 + eventToUpdate.getOccupiedPlaces());
+            }
+            if (updateRequest.locationId() == null) {
+                int currentCapacity = eventToUpdate.getLocation().getCapacity();
+                if (updateRequest.maxPlaces() > currentCapacity) {
+                    throw new IllegalArgumentException(
+                            "Новое количество мест превышает вместимость текущей локации: " + currentCapacity);
+                }
             }
             eventToUpdate.setMaxPlaces(updateRequest.maxPlaces());
         }

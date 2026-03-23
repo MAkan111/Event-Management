@@ -49,6 +49,8 @@ public class GlobalSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/locations/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/locations/**").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/events/my").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/events/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/search").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/registrations/**").hasRole("USER")
