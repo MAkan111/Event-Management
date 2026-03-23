@@ -49,6 +49,14 @@ public class GlobalSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/locations/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/locations/**").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/events/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events/search").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/events").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/events/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/events/**").hasAnyRole("USER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
