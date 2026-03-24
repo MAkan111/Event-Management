@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,13 +29,13 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public ResponseEntity<EventResponse> addEvent(@Valid @RequestBody EventRequest eventRequest) {
+    public ResponseEntity<EventResponse> createEvent(@Valid @RequestBody EventRequest eventRequest) {
         EventResponse eventResponse = eventService.addEvent(eventRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(eventResponse);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<EventResponse>> searchEvents(@RequestBody EventSearchRequest eventSearchRequest) {
+    public ResponseEntity<List<EventResponse>> searchEventsByFilter(@RequestBody EventSearchRequest eventSearchRequest) {
         List<EventResponse> eventResponse = eventService.searchEvents(eventSearchRequest);
         return ResponseEntity.ok(eventResponse);
     }
@@ -45,7 +46,7 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventResponse> getEvent(@PathVariable("eventId") Long eventId) {
+    public ResponseEntity<EventResponse> getEventById(@PathVariable("eventId") Long eventId) {
         EventResponse eventResponse = eventService.getEvent(eventId);
         return ResponseEntity.ok(eventResponse);
     }

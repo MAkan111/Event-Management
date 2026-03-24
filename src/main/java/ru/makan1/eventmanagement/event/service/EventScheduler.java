@@ -19,7 +19,7 @@ public class EventScheduler {
 
     private final EventRepository eventRepository;
 
-    @Scheduled(fixedRate = 60_000)
+    @Scheduled(fixedRateString = "${spring.scheduler.fixed-rate}")
     @Transactional
     public void updateEventStatuses() {
         LocalDateTime now = LocalDateTime.now();

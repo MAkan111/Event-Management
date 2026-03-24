@@ -1,4 +1,6 @@
 spring:
+  scheduler:
+    fixed-rate: 60000
   datasource:
     url: jdbc:postgresql://localhost:5432/event_management
     username: postgres
