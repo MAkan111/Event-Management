@@ -24,7 +24,6 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
 public class GlobalSecurityConfig {
 
     @Bean
@@ -48,6 +47,16 @@ public class GlobalSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/locations/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/locations/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/locations/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/events/my").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/events/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events/search").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/events").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/events/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/events/registrations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/events/**").hasAnyRole("USER", "ADMIN")
 
                         .anyRequest().authenticated()
                 )

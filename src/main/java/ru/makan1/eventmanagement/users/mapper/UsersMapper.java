@@ -18,7 +18,7 @@ public class UsersMapper {
 
     public static UsersResponse mapToUserResponse(UsersEntity usersEntity) {
         return new UsersResponse(
-                usersEntity.getId(),
+                usersEntity.getUserId(),
                 usersEntity.getLogin(),
                 usersEntity.getAge(),
                 usersEntity.getRole()
