@@ -53,7 +53,6 @@ public class KafkaConsumerConfig {
         var factory = new ConcurrentKafkaListenerContainerFactory<UUID, EventKafkaMessage>();
         factory.setConsumerFactory(consumerFactory);
 
-        // чтобы consumer не падал навсегда на одной "битой" записи
         var backOff = new ExponentialBackOffWithMaxRetries(0);
         factory.setCommonErrorHandler(new DefaultErrorHandler(backOff));
 

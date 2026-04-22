@@ -24,7 +24,6 @@ public class EventKafkaListener {
             log.info("Received event from topic: {}", record.value());
             notificationsService.processMessage(record.value());
         } catch (Exception ex) {
-            // не роняем consumer из-за одного плохого сообщения
             log.error("Failed to process Kafka messageId={}", record.key(), ex);
         }
     }

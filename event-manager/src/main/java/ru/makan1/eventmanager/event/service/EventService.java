@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.makan1.eventcommon.model.ChangeItem;
 import ru.makan1.eventmanager.event.dto.EventRequest;
 import ru.makan1.eventmanager.event.dto.EventResponse;
