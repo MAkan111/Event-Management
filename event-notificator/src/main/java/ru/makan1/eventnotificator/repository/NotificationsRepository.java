@@ -18,8 +18,6 @@ public interface NotificationsRepository extends JpaRepository<Notifications, Lo
     List<Notifications> findAllByUserIdAndIsReadFalseOrderByCreatedAtDesc(Long userId);
     long deleteByCreatedAtBefore(Instant threshold);
 
-    long countByUserIdAndNotificationIdIn(Long userId, Collection<Long> notificationIds);
-
     @Modifying
     @Transactional
     @Query("""

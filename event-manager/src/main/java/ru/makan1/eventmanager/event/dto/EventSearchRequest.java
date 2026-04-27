@@ -1,11 +1,16 @@
 package ru.makan1.eventmanager.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record EventSearchRequest(
+        @NotBlank
+        @NotEmpty
         String name,
         Integer placesMin,
         Integer placesMax,
@@ -18,6 +23,8 @@ public record EventSearchRequest(
         Integer durationMin,
         Integer durationMax,
         Long locationId,
+        @NotBlank
+        @NotEmpty
         String eventStatus
 ) {
 }

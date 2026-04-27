@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.makan1.eventcommon.model.ChangeItem;
 import ru.makan1.eventmanager.event.dto.EventRequest;
 import ru.makan1.eventmanager.event.dto.EventResponse;
@@ -33,8 +34,8 @@ public class EventService {
     private final LocationsRepository locationsRepository;
     private final UsersRepository usersRepository;
     private final EventSender eventSender;
-    private final TxService txService;
 
+    @Transactional
     public EventResponse addEvent(EventRequest eventRequest) {
         LocationEntity location = locationsRepository.findById(eventRequest.locationId())
                 .orElseThrow(() -> new EntityNotFoundException("Локации для мероприятия не существует"));
@@ -51,7 +52,7 @@ public class EventService {
         eventEntity.setLocation(location);
         eventEntity.setStatus(EventStatus.WAIT_START);
 
-        EventResponse createdEvent = EventMapper.mapToEventResponse(txService.saveToEventDb(eventEntity));
+        EventResponse createdEvent = EventMapper.mapToEventResponse(eventRepository.save(eventEntity));
 
         var kafkaMessage = EventMapper.toKafkaMessageCreated(
                 createdEvent,
@@ -64,16 +65,10 @@ public class EventService {
     }
 
     public List<EventResponse> searchEvents(EventSearchRequest eventSearchRequest) {
-        String name = EventUtils.normalizeBlankToNull(eventSearchRequest.name());
-        EventStatus status;
-        try {
-            status = EventUtils.parseEventStatusOrNull(eventSearchRequest.eventStatus());
-        } catch (IllegalArgumentException ex) {
-            return List.of();
-        }
+        EventStatus status = EventUtils.parseEventStatusOrNull(eventSearchRequest.eventStatus());
 
         return eventRepository.search(
-                        name,
+                        eventSearchRequest.name(),
                         eventSearchRequest.placesMin(),
                         eventSearchRequest.placesMax(),
                         eventSearchRequest.dateStartAfter(),
@@ -90,6 +85,7 @@ public class EventService {
                 .toList();
     }
 
+    @Transactional
     public EventResponse registerUser(Long eventId) {
         EventEntity event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Такого мероприятия не существует"));
@@ -113,8 +109,8 @@ public class EventService {
         event.getUsers().add(user);
         event.setOccupiedPlaces(event.getOccupiedPlaces() + 1);
 
-        txService.saveToUsersDb(user);
-        return EventMapper.mapToEventResponse(txService.saveToEventDb(event));
+        usersRepository.save(user);
+        return EventMapper.mapToEventResponse(eventRepository.save(event));
     }
 
     public EventResponse getEvent(Long eventId) {
@@ -138,6 +134,7 @@ public class EventService {
                 .toList();
     }
 
+    @Transactional
     public void deleteEvent(Long eventId) {
         EventEntity deletedEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Такого мероприятия не существует"));
@@ -167,9 +164,10 @@ public class EventService {
         eventSender.sendEvent(kafkaMessage);
 
         deletedEvent.setStatus(EventStatus.CANCELLED);
-        txService.saveToEventDb(deletedEvent);
+        eventRepository.save(deletedEvent);
     }
 
+    @Transactional
     public void cancelRegistration(Long eventId) {
         UsersEntity user = getCurrentUser();
         EventEntity event = eventRepository.findById(eventId)
@@ -187,10 +185,11 @@ public class EventService {
         event.getUsers().removeIf(u -> u.getUserId().equals(user.getUserId()));
         event.setOccupiedPlaces(Math.max(0, event.getOccupiedPlaces() - 1));
 
-        txService.saveToUsersDb(user);
-        txService.saveToEventDb(event);
+        usersRepository.save(user);
+        eventRepository.save(event);
     }
 
+    @Transactional
     public EventResponse updateEvent(Long eventId, EventUpdateRequest updateRequest) {
         EventEntity eventToUpdate = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Такого мероприятия не существует"));
@@ -238,7 +237,7 @@ public class EventService {
         eventToUpdate.setDuration(updateRequest.duration());
         eventToUpdate.setCost(updateRequest.cost());
 
-        var updatedEvent = EventMapper.mapToEventResponse(txService.saveToEventDb(eventToUpdate));
+        var updatedEvent = EventMapper.mapToEventResponse(eventRepository.save(eventToUpdate));
         List<ChangeItem> changeItemList = ChangesBuilder.collectChanges(oldValue, updatedEvent);
         List<Long> subscribers = collectSubscriberIds(eventToUpdate);
 
