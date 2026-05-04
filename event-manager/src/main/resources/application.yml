@@ -1,0 +1,24 @@
+server:
+  port: 8080
+spring:
+  scheduler:
+    fixed-rate: 60000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/event_management
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  security:
+    filter:
+      jwt-secret-key: ${SECRET_KEY:8f3c8e3d8f3c8e3d8f3c8e3d8f3c8e3d}
+      jwt-expiration-time: ${EXPIRATION_TIME:7200000}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.UUIDSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+springdoc:
+  swagger-ui.url: /event-manager-openapi.yaml

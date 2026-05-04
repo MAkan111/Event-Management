@@ -1,0 +1,25 @@
+server:
+  port: 8081
+spring:
+  scheduler:
+    cleanup-fixed-rate: 60000
+    retention-days: 7
+  datasource:
+    url: jdbc:postgresql://localhost:5432/event_management
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  security:
+    filter:
+      jwt-secret-key: ${SECRET_KEY:8f3c8e3d8f3c8e3d8f3c8e3d8f3c8e3d}
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: events-group
+      properties:
+        spring.json.value.default.type: ru.makan1.eventcommon.messages.EventKafkaMessage
+        spring.json.use.type.headers: false
+        spring.json.trusted.packages: "*"
